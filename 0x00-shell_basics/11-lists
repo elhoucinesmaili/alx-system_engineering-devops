@@ -1,4 +1,7 @@
 #!/bin/bash
-ls -la .
-ls -la ..
+
+# List files in the current directory in long format, including hidden files
+ls -la
+
+# List files in the /boot directory in long format, including hidden files
 ls -la /boot
