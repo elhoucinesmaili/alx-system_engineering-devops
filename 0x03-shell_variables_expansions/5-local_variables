@@ -1,9 +1,2 @@
 #!/bin/bash
-
-for var in $(declare -p | cut -d' ' -f3); do
-    echo "$var"
-done
-
-printenv | cut -d'=' -f1
-
-declare -F | cut -d' ' -f3
+declare
