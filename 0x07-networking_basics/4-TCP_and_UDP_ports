@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# This script displays active listening TCP and UDP ports with their associated PID and program name.
+
+netstat -lp
