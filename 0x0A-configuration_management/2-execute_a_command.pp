@@ -1,5 +1,4 @@
-exec { 'terminate_process':
-  command => 'pkill -9 -f killmenow',
+exec { 'killmenow':
+  command => 'pkill -f killmenow',
   path    => ['/bin', '/usr/bin', '/sbin', '/usr/sbin'],
-  onlyif  => 'pgrep -f killmenow',
 }
