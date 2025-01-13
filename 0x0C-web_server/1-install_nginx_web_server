@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Script to install Nginx, configure it to listen on port 80, and display "Hello World"
+
+# Update package lists
+sudo apt update -y
+
+# Install Nginx
+sudo apt install -y nginx
+
+# Configure Nginx to display "Hello World"
+echo "Hello World!" | sudo tee /var/www/html/index.html > /dev/null
+
+# Start Nginx service
+sudo systemctl start nginx

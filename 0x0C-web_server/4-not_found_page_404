@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Script to install Nginx, configure redirection, and set up a custom 404 page
+
+# Update package lists and install Nginx
+sudo apt update -y
+sudo apt install -y nginx
+
+# Create a simple index.html file
+echo "Hello World!" | sudo tee /var/www/html/index.html > /dev/null
+
+# Add redirection for /redirect_me to a YouTube URL
+sudo sed -i '/server_name _;/a \ \ \ \ location /redirect_me { return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4; }' /etc/nginx/sites-available/default
+
+# Create a custom 404 error page
+echo "Ceci n'est pas une page" | sudo tee /var/www/html/custom_404.html > /dev/null
+
+# Add configuration for the custom 404 error page
+sudo sed -i '/server_name _;/a \ \ \ \ error_page 404 /custom_404.html;' /etc/nginx/sites-available/default
+
+# Restart Nginx to apply changes
+sudo systemctl restart nginx

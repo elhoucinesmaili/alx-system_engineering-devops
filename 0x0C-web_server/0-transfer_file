@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Script to securely transfer a file from the client to a server
+
+# Check if at least 3 arguments are provided
+if [ "$#" -lt 3 ]; then
+    echo "Usage: $0 FILE_PATH SERVER_IP USERNAME [SSH_KEY_PATH]"
+    exit 1
+fi
+
+# Assign arguments to variables for clarity
+FILE_PATH="$1"
+SERVER_IP="$2"
+USERNAME="$3"
+SSH_KEY_PATH="${4:-}"
+
+# Perform file transfer
+if [ -n "$SSH_KEY_PATH" ]; then
+    # Use the specified SSH key
+    scp -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$FILE_PATH" "$USERNAME@$SERVER_IP:~/"
+else
+    # Use default SSH key
+    scp -o StrictHostKeyChecking=no "$FILE_PATH" "$USERNAME@$SERVER_IP:~/"
+fi

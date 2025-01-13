@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Script to set up Nginx and configure /redirect_me to redirect to another page
+
+# Update system packages
+sudo apt update -y
+
+# Install Nginx
+sudo apt install -y nginx
+
+# Allow HTTP traffic through the firewall
+sudo ufw allow 'Nginx HTTP'
+
+# Create a simple "Hello World" index page
+echo "Hello World" | sudo tee /var/www/html/index.html > /dev/null
+
+# Add a redirection rule for /redirect_me
+sudo sed -i '/server_name _;/a \ \ \ \ location /redirect_me { return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4; }' /etc/nginx/sites-available/default
+
+# Restart Nginx to apply changes
+sudo systemctl restart nginx
