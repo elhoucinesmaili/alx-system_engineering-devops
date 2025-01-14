@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Fix the web server to return "Hello ALX" on port 8080
+
+apt-get update
+apt-get install -y apache2
+echo "Hello ALX" > /var/www/html/index.html
+service apache2 start
