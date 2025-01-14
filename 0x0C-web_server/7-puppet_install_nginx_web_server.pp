@@ -1,32 +1,38 @@
-# Update the system package list
+# Ensure system package index is up-to-date
 exec { 'update_system':
   command => '/usr/bin/apt-get update',
 }
 
 # Install Nginx package
 package { 'nginx':
-  ensure  => 'present',
+  ensure  => installed,
   require => Exec['update_system'],
 }
 
-# Configure custom index.html file
+# Create a simple HTML file
 file { '/var/www/html/index.html':
-  ensure  => 'file',
-  content => 'Hello World!',
+  content => "<html>
+  <head><title>Welcome</title></head>
+  <body>
+    <h1>Hello, Ubuntu Server!</h1>
+  </body>
+</html>",
   require => Package['nginx'],
 }
 
-# Add a custom redirection rule
-exec { 'add_redirect_rule':
-  command => 'sed -i "24i\\tlocation /redirect_me { return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4; }" /etc/nginx/sites-available/default',
-  path    => ['/bin', '/usr/bin'],
+# Add redirect configuration in Nginx
+file_line { 'add_redirect_to_nginx':
+  path  => '/etc/nginx/sites-available/default',
+  line  => 'rewrite ^/redirect_me https://www.youtube.com/watch?v=dQw4w9WgXcQ permanent;',
+  match => 'location / {',
+  after => 'location / {',
   require => Package['nginx'],
 }
 
-# Ensure Nginx service is running
+# Ensure Nginx service is running and apply changes
 service { 'nginx':
-  ensure    => 'running',
-  enable    => true,
-  require   => [Package['nginx'], Exec['add_redirect_rule']],
+  ensure     => running,
+  enable     => true,
+  subscribe  => File['/etc/nginx/sites-available/default'],
 }
 
