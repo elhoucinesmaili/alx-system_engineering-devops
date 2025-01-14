@@ -1,24 +1,32 @@
-# Setup New Ubuntu server with nginx
-
-exec { 'update system':
-        command => '/usr/bin/apt-get update',
+# Update the system package list
+exec { 'update_system':
+  command => '/usr/bin/apt-get update',
 }
 
+# Install Nginx package
 package { 'nginx':
-	ensure => 'installed',
-	require => Exec['update system']
+  ensure  => 'present',
+  require => Exec['update_system'],
 }
 
-file {'/var/www/html/index.html':
-	content => 'Hello World!'
+# Configure custom index.html file
+file { '/var/www/html/index.html':
+  ensure  => 'file',
+  content => 'Hello World!',
+  require => Package['nginx'],
 }
 
-exec {'redirect_me':
-	command => 'sed -i "24i\	rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;" /etc/nginx/sites-available/default',
-	provider => 'shell'
+# Add a custom redirection rule
+exec { 'add_redirect_rule':
+  command => 'sed -i "24i\\tlocation /redirect_me { return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4; }" /etc/nginx/sites-available/default',
+  path    => ['/bin', '/usr/bin'],
+  require => Package['nginx'],
 }
 
-service {'nginx':
-	ensure => running,
-	require => Package['nginx']
+# Ensure Nginx service is running
+service { 'nginx':
+  ensure    => 'running',
+  enable    => true,
+  require   => [Package['nginx'], Exec['add_redirect_rule']],
 }
+
