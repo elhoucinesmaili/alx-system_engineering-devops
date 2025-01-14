@@ -1,14 +1,17 @@
-#!/bin/bash
-# Update package list and install Nginx
+#!/usr/bin/env bash
+# Script to install and configure Nginx on Ubuntu server to serve "Hello World!" on port 80
+
+# Exit immediately if a command exits with a non-zero status
+set -e
+
+# Update package lists
 apt-get update -y
+
+# Install Nginx
 apt-get install nginx -y
 
-# Create a custom index page
-echo "Hello World!" > /var/www/html/index.html
+# Replace the default Nginx index.html with a custom one containing "Hello World!"
+echo "Hello World!" > /var/www/html/index.nginx-debian.html
 
-# Ensure Nginx is running and restart it without using systemctl
-/etc/init.d/nginx restart
-
-# Confirm Nginx is listening on port 80 (optional step for debugging)
-curl -s http://localhost/ | grep "Hello World!" && echo "Nginx configured successfully"
-
+# Start Nginx
+service nginx start
