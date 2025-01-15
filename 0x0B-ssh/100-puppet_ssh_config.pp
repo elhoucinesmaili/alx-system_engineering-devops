@@ -1,5 +1,4 @@
 # Puppet manifest to configure the /etc/ssh/ssh_config file
-# Ensures password authentication is disabled and an identity file is declared
 
 file_line { 'Turn off passwd auth':
   ensure => present,
