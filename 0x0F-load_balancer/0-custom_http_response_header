@@ -1,9 +1,26 @@
-cript that doubles the number of webservers and adds new configs
+onfigures Nginx to include a custom HTTP response header `X-Served-By` with the server hostname
 
-# install nginx
-apt-get  update ; apt-get -y install nginx
+# Update the package list and install Nginx
+sudo apt-get update
+sudo apt-get install -y nginx
 
-string="http {\n\tadd_header X-Served-By \"$HOSTNAME\";"
-sudo sed -i "s/http {/$string/" /etc/nginx/nginx.conf
-# restart nginx
-sudo service nginx restart
+# Configure Nginx to include the custom header
+sudo bash -c 'echo "
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+    index index.html;
+
+    server_name _;
+
+    location / {
+        add_header X-Served-By \$hostname;
+        try_files \$uri \$uri/ =404;
+    }
+}" > /etc/nginx/sites-available/default'
+
+# Reload or restart Nginx
+sudo systemctl reload nginx
+sudo systemctl restart nginx
