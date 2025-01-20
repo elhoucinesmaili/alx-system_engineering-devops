@@ -1,11 +1,15 @@
-onfigures Nginx to include a custom HTTP response header `X-Served-By` with the server hostname
+#!/usr/bin/env bash
+# Script to configure Nginx with a custom HTTP response header
 
-# Update the package list and install Nginx
-sudo apt-get update
+# Update and install Nginx
+sudo apt-get update -y
 sudo apt-get install -y nginx
 
-# Configure Nginx to include the custom header
-sudo bash -c 'echo "
+# Set the hostname
+HOSTNAME=$(hostname)
+
+# Add custom HTTP header to the Nginx default server block
+sudo bash -c "cat > /etc/nginx/sites-available/default" <<EOF
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
@@ -16,11 +20,11 @@ server {
     server_name _;
 
     location / {
-        add_header X-Served-By \$hostname;
+        add_header X-Served-By \"$HOSTNAME\";
         try_files \$uri \$uri/ =404;
     }
-}" > /etc/nginx/sites-available/default'
+}
+EOF
 
-# Reload or restart Nginx
-sudo systemctl reload nginx
+# Restart Nginx to apply changes
 sudo systemctl restart nginx
