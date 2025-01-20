@@ -1,18 +1,51 @@
-utomate the task of creating a custom HTTP header response with Puppet.
-# The name of the custom HTTP header must be X-Served-By.
-# The value of the custom HTTP header must be the hostname of the server Nginx is running on.
+}
+tom_http_response_header.pp
+# Configures Nginx to include a custom HTTP header (X-Served-By) with the hostname
 
-exec {'update':
-  command => '/usr/bin/apt-get update',
+# Ensure Nginx is installed and running
+package { 'nginx':
+  ensure => installed,
 }
--> package {'nginx':
-  ensure => 'present',
+
+# Ensure the Nginx service is enabled and running
+service { 'nginx':
+  ensure     => running,
+  enable     => true,
+  require    => Package['nginx'],
 }
--> file_line { 'http_header':
-  path  => '/etc/nginx/nginx.conf',
-  line  => "http {\n\tadd_header X-Served-By \"${hostname}\";",
-  match => 'http {',
+
+# Configure Nginx to include the custom header
+file { '/etc/nginx/sites-available/default':
+  ensure  => file,
+  content => template('nginx/default.erb'),
+  notify  => Service['nginx'],
+  require => Package['nginx'],
 }
--> exec {'start':
-  command => '/usr/sbin/service nginx start',
+
+# Create the template for the Nginx configuration
+file { '/etc/puppetlabs/code/environments/production/modules/nginx/templates/default.erb':
+  ensure  => file,
+  content => @("EOF")
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+    index index.html index.htm index.nginx-debian.html;
+
+    server_name _;
+
+    location / {
+        add_header X-Served-By "<%= @hostname %>";
+        try_files \$uri \$uri/ =404;
+    }
+}
+| EOF
+}
+
+# Reload Nginx to apply changes
+exec { 'reload-nginx':
+  command     => '/usr/sbin/nginx -s reload',
+  refreshonly => true,
+  subscribe   => File['/etc/nginx/sites-available/default'],
 }
