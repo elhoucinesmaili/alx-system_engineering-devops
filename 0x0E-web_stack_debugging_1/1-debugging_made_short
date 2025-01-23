@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
-# Nginx likes port 80
+# Nginx requires port 80 to function correctly
 
+# Copy the default configuration file into the sites-enabled directory
 cat /etc/nginx/sites-available/default > /etc/nginx/sites-enabled/default
+
+# Restart the Nginx service to apply the changes
 sudo service nginx restart
+
+# Remove the Nginx PID file to ensure a clean restart
 rm /run/nginx.pid
