@@ -1,10 +1,41 @@
-#!/usr/bin/env bash
-# Script that accepts two arguments and processes domain names.
+#!/bin/bash
 
-if [ $# -eq 1 ]; then
- dom="www.$1 lb-01.$1 web-01.$1 web-02.$1"
-else
- dom="$2.$1"
-fi
+# Function to fetch and display subdomain information
+display_subdomain_info() {
+    local domain=$1
+    local subdomain=$2
 
-dig $dom | awk '/ANSWER SECTION:/{getline; split($1,b,"."); print "The subdomain", b[1], "is a", $4, "record and points to", $5}'
+    # Use dig to get the DNS record of the subdomain
+    record=$(dig "$subdomain.$domain" +short)
+
+    if [[ -n $record ]]; then
+        echo "The subdomain $subdomain is a A record and points to $record"
+    else
+        echo "The subdomain $subdomain does not have an A record."
+    fi
+}
+
+# Main script logic
+main() {
+    local domain=$1
+    local specific_subdomain=$2
+
+    if [[ -z $domain ]]; then
+        echo "Error: Domain name is required."
+        exit 1
+    fi
+
+    # If a specific subdomain is provided, display its information
+    if [[ -n $specific_subdomain ]]; then
+        display_subdomain_info "$domain" "$specific_subdomain"
+    else
+        # Default subdomains to audit
+        subdomains=(www lb-01 web-01 web-02)
+        for sub in "${subdomains[@]}"; do
+            display_subdomain_info "$domain" "$sub"
+        done
+    fi
+}
+
+main "$1" "$2"
+
