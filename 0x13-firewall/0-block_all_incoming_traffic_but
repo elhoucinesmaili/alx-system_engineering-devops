@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# Install UFW firewall
+sudo apt update && sudo apt install -y ufw
+
+# Set default policies
+sudo ufw default allow outgoing
+sudo ufw default deny incoming
+
+# Allow necessary ports
+sudo ufw allow 22    # SSH
+sudo ufw allow 80    # HTTP
+sudo ufw allow 443   # HTTPS
+
+# Enable UFW
+sudo ufw enable
+
+# Display status
+sudo ufw status verbose
