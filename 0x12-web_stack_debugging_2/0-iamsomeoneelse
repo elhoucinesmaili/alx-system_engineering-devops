@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-# Runs the whoami command under the user passed as argument.
+# A script to run 'whoami' as another user
 sudo -u "$1" whoami
