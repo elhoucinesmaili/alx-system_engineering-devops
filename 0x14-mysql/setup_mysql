@@ -1,0 +1,9 @@
+-- MySQL script to create a user and grant replication permissions
+
+-- Create the user if it does not exist  
+-- The user should be identified with password projectcorrection280alx  
+CREATE USER IF NOT EXISTS 'ALX_user'@'localhost' IDENTIFIED BY 'projectcorrection280alx';
+
+-- Grant ALX_user permission to check primary/replica status  
+GRANT REPLICATION CLIENT ON *.* TO 'ALX_user'@'localhost';  
+FLUSH PRIVILEGES;
