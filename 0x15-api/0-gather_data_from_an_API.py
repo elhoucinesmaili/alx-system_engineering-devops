@@ -5,6 +5,7 @@ Fetches and displays an employee's TODO list progress from a REST API.
 import requests
 import sys
 
+
 def get_employee_todo_progress(employee_id):
     """Fetch and display the TODO list progress of a given employee."""
     base_url = "https://jsonplaceholder.typicode.com"
