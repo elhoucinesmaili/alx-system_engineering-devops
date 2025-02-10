@@ -1,17 +1,18 @@
 #!/usr/bin/python3
-"""Script to fetch user data from an API and export it to a JSON file."""
+""" Python to get data from an API and convert to Json"""
 import csv
 import json
 import requests
 import sys
 
+
 if __name__ == '__main__':
     USER_ID = sys.argv[1]
     url_to_user = 'https://jsonplaceholder.typicode.com/users/' + USER_ID
     res = requests.get(url_to_user)
-    """Fetching username from API response."""
+    """Documentation"""
     USERNAME = res.json().get('username')
-    
+    """Documentation"""
     url_to_task = url_to_user + '/todos'
     res = requests.get(url_to_task)
     tasks = res.json()
@@ -24,7 +25,6 @@ if __name__ == '__main__':
                                   "task": TASK_TITLE,
                                   "completed": TASK_COMPLETED_STATUS,
                                   "username": USERNAME})
-    
-    """Saving the fetched data into a JSON file."""
+    """print(dict_data)"""
     with open('{}.json'.format(USER_ID), 'w') as f:
         json.dump(dict_data, f)
