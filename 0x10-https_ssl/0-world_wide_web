@@ -2,7 +2,6 @@
 # returns information about the subdomain
 
 
-
 if [ "$#" = 1 ]
 then
     subdomains=("www" "lb-01" "web-01" "web-02")
