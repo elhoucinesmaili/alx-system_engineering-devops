@@ -1,20 +1,9 @@
 #!/usr/bin/python3
-"""
-This script retrieves and returns the subscriber count of a specified subreddit.
-It sends an HTTP request to the Reddit API and ensures error handling for robustness.
-"""
 import requests
 
+
 def number_of_subscribers(subreddit):
-    """
-    Fetches the subscriber count for a given subreddit.
-    
-    Args:
-        subreddit (str): Name of the subreddit to query.
-    
-    Returns:
-        int: Number of subscribers if successful, otherwise returns 0.
-    """
+    """Function that returns no. of subs of a subreddit"""
     if subreddit is None or not isinstance(subreddit, str):
         return 0
 
